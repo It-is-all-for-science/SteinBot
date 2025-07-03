@@ -2,7 +2,7 @@ import os
 from docx import Document
 import fitz  # pymupdf
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.embeddings import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings  # ИСПРАВЛЕН ИМПОРТ
 from langchain_chroma import Chroma
 
 def extract_text(path):
