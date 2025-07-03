@@ -9,6 +9,8 @@ from handlers.messages import handle_text, handle_voice, handle_image, handle_do
 
 import os
 from dotenv import load_dotenv
+from telegram import Update
+
 load_dotenv()
 TOKEN = os.getenv("TELEGRAM_TOKEN")
 
@@ -28,7 +30,7 @@ def main():
     app.add_handler(MessageHandler(filters.Document.ALL, handle_document))
 
     print("SteinBot запущен. Ожидаю сообщений...")  # <--- ОБЯЗАТЕЛЬНО!
-    from telegram import Update
+    
     app.run_polling(allowed_updates=Update.ALL_TYPES)
 
 if __name__ == "__main__":
