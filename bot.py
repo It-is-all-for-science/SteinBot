@@ -15,6 +15,7 @@ load_dotenv()
 TOKEN = os.getenv("TELEGRAM_TOKEN")
 
 def main():
+    print("MAIN STARTED")
     app = Application.builder().token(TOKEN).build()
 
     # Команды
