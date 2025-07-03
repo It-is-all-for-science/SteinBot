@@ -1,0 +1,15 @@
+# Скопируйте эти переменные в настройки Render (Settings -> Environment Variables)
+
+# Обязательные переменные:
+TELEGRAM_TOKEN=your_telegram_bot_token_here
+RENDER_EXTERNAL_URL=https://your-app-name.onrender.com
+
+# Опциональные переменные:
+WEBHOOK_SECRET=supersecret
+OPENAI_API_KEY=your_openai_api_key_here
+
+# Примечания:
+# 1. TELEGRAM_TOKEN - получите у @BotFather в Telegram
+# 2. RENDER_EXTERNAL_URL - замените на реальный URL вашего Render-сервиса
+# 3. WEBHOOK_SECRET - любой секретный ключ для безопасности webhook
+# 4. PORT - Render автоматически подставляет эту переменную 
