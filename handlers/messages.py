@@ -5,7 +5,7 @@ import os
 import time
 import asyncio
 
-from services.loader import extract_text, ingest_all, search_context
+from services.loader import extract_text, ingest_all
 from services.llm import generate_response
 from services.voice import transcribe_voice
 
@@ -19,12 +19,11 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         user_message = update.message.text
         style = context.user_data.get("style", "postdoc")
         loop = asyncio.get_running_loop()
-        context_text = await loop.run_in_executor(None, search_context, user_message)
         answer = await loop.run_in_executor(
             None,
             generate_response,
             user_message,
-            context_text,
+            "",
             style
         )
         await update.message.reply_text(answer)
