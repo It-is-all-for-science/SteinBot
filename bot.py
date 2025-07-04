@@ -50,7 +50,7 @@ def main():
             port=PORT,
             webhook_url=webhook_url,
             allowed_updates=Update.ALL_TYPES,
-            # path=f"/webhook/{WEBHOOK_SECRET}",  # если поддерживается вашей версией
+            path=f"/webhook/{WEBHOOK_SECRET}",
         )
     else:
         # Режим polling для локальной разработки
