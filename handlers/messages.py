@@ -15,15 +15,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f"[DEBUG] handle_text: start, text={getattr(update.message, 'text', None)}", flush=True)
     start = time.time()
     try:
-        user_message = update.message.text
-        style = context.user_data.get("style", "postdoc")
-        context_text = search_context(user_message)
-        answer = generate_response(
-            user_message=user_message,
-            context=context_text,
-            mode=style
-        )
-        await update.message.reply_text(answer)
+        await update.message.reply_text("Бот работает!")
     except Exception as e:
         print(f"[ERROR] handle_text: {e}", flush=True)
     print(f"[DEBUG] handle_text: end, elapsed={time.time() - start:.2f}s", flush=True)
