@@ -1,7 +1,7 @@
 python-telegram-bot[webhooks]==20.7
 langchain==0.3.26
 langchain-chroma==0.1.4
-langchain-huggingface==0.0.6
+langchain-huggingface==0.3.0
 python-dotenv==1.0.1
 python-docx==1.1.0
 pymupdf==1.24.4
