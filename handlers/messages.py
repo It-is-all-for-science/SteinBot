@@ -3,6 +3,7 @@ from telegram.ext import ContextTypes
 import tempfile
 import os
 import time
+import asyncio
 
 from services.loader import extract_text, ingest_all, search_context
 from services.llm import generate_response
@@ -15,7 +16,18 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f"[DEBUG] handle_text: start, text={getattr(update.message, 'text', None)}", flush=True)
     start = time.time()
     try:
-        await update.message.reply_text("Бот работает!")
+        user_message = update.message.text
+        style = context.user_data.get("style", "postdoc")
+        loop = asyncio.get_running_loop()
+        context_text = await loop.run_in_executor(None, search_context, user_message)
+        answer = await loop.run_in_executor(
+            None,
+            generate_response,
+            user_message,
+            context_text,
+            style
+        )
+        await update.message.reply_text(answer)
     except Exception as e:
         print(f"[ERROR] handle_text: {e}", flush=True)
     print(f"[DEBUG] handle_text: end, elapsed={time.time() - start:.2f}s", flush=True)
@@ -28,14 +40,17 @@ async def handle_voice(update: Update, context: ContextTypes.DEFAULT_TYPE):
         voice = await update.message.voice.get_file()
         with tempfile.NamedTemporaryFile(suffix=".ogg", delete=False) as tf:
             await voice.download_to_drive(tf.name)
-            text = transcribe_voice(tf.name)
+            loop = asyncio.get_running_loop()
+            text = await loop.run_in_executor(None, transcribe_voice, tf.name)
             os.remove(tf.name)
         style = context.user_data.get("style", "postdoc")
-        context_text = search_context(text)
-        answer = generate_response(
-            user_message=text,
-            context=context_text,
-            mode=style
+        context_text = await loop.run_in_executor(None, search_context, text)
+        answer = await loop.run_in_executor(
+            None,
+            generate_response,
+            text,
+            context_text,
+            style
         )
         await update.message.reply_text(f"Распознано: {text}\n\n{answer}")
     except Exception as e:
@@ -60,10 +75,15 @@ async def handle_image(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "Проанализируй это изображение как научный рецензент. "
             "Оцени корректность, стиль, смысловую нагрузку, укажи возможные ошибки."
         )
-        answer = generate_response(
-            user_message=prompt,
-            image_b64=img_b64,
-            mode=style
+        loop = asyncio.get_running_loop()
+        answer = await loop.run_in_executor(
+            None,
+            generate_response,
+            prompt,
+            "",
+            style,
+            None,
+            img_b64
         )
         await update.message.reply_text(answer)
     except Exception as e:
@@ -83,14 +103,13 @@ async def handle_document(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await file.download_to_drive(tf.name)
             temp_path = tf.name
         try:
-            text = extract_text(temp_path)
-            # Можно сразу добавить в базу знаний или только по команде
+            loop = asyncio.get_running_loop()
+            text = await loop.run_in_executor(None, extract_text, temp_path)
             docs_dir = "docs"
             os.makedirs(docs_dir, exist_ok=True)
             dest_path = os.path.join(docs_dir, file_name)
             os.replace(temp_path, dest_path)
-            # После загрузки можно автоматически обновить базу знаний
-            ingest_all(docs_dir=docs_dir)
+            await loop.run_in_executor(None, ingest_all, docs_dir)
             await update.message.reply_text("Документ загружен и проиндексирован!\nТеперь вы можете задавать вопросы по его содержимому.")
         except Exception as e:
             await update.message.reply_text(f"Ошибка при обработке документа: {e}")
