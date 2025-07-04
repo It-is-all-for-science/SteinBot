@@ -1,6 +1,5 @@
 import os
 import sys
-from flask import Flask, request
 from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
@@ -21,31 +20,7 @@ if not RENDER_EXTERNAL_URL:
     print("WARNING: RENDER_EXTERNAL_URL не задан. Бот будет работать в режиме polling для локальной разработки.")
     RENDER_EXTERNAL_URL = None
 
-app = Flask(__name__)
-tg_app = None
-
-@app.route("/", methods=["GET"])
-def home():
-    return "SteinBot is alive!"
-
-@app.route("/health", methods=["GET"])
-def health():
-    return "OK"
-
-@app.route(f"/webhook/{WEBHOOK_SECRET}", methods=["POST"])
-def webhook():
-    if request.method == "POST":
-        try:
-            update = Update.de_json(request.get_json(force=True), tg_app.bot)
-            tg_app.update_queue.put(update)
-            return "OK"
-        except Exception as e:
-            print(f"Webhook error: {e}")
-            return "Error", 500
-    return "Not allowed", 405
-
 def main():
-    global tg_app
     print("=== Starting SteinBot ===")
     print(f"PORT: {PORT}")
     print(f"RENDER_EXTERNAL_URL: {RENDER_EXTERNAL_URL}")
@@ -75,6 +50,7 @@ def main():
             port=PORT,
             webhook_url=webhook_url,
             allowed_updates=Update.ALL_TYPES,
+            # path=f"/webhook/{WEBHOOK_SECRET}",  # если поддерживается вашей версией
         )
     else:
         # Режим polling для локальной разработки
