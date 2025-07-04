@@ -8,3 +8,4 @@ pymupdf==1.24.4
 openai-whisper
 # openai должен быть в самом конце для pinning
 openai==0.28.1
+pydub==0.25.1
