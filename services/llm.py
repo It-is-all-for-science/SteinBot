@@ -38,6 +38,7 @@ def generate_response(
     image_b64=None,
     web_search=False
 ):
+    print("[DEBUG] generate_response: start", flush=True)
     system_prompt = PERSONALITIES.get(mode, PERSONALITIES["postdoc"])
     messages = [{"role": "system", "content": system_prompt}]
     if context:
@@ -59,11 +60,16 @@ def generate_response(
             model = model.replace(":free", ":online")
         else:
             model += ":online"
-
-    response = openai.ChatCompletion.create(
-        model=model,
-        messages=messages,
-        max_tokens=1024,
-        temperature=0.7
-    )
-    return response.choices[0].message.content.strip()
+    try:
+        print("[DEBUG] generate_response: calling openai.ChatCompletion.create", flush=True)
+        response = openai.ChatCompletion.create(
+            model=model,
+            messages=messages,
+            max_tokens=1024,
+            temperature=0.7
+        )
+        print("[DEBUG] generate_response: got response", flush=True)
+        return response.choices[0].message.content.strip()
+    except Exception as e:
+        print(f"[ERROR] generate_response: {e}", flush=True)
+        raise
