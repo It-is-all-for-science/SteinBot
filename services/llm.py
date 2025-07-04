@@ -28,7 +28,7 @@ PERSONALITIES = {
     )
 }
 
-DEFAULT_MODEL = "meta-llama/llama-3.1-8b-instruct:free"
+DEFAULT_MODEL = "openai/gpt-3.5-turbo"
 
 def generate_response(
     user_message,
