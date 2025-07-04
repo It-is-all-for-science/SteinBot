@@ -43,14 +43,13 @@ def main():
 
     if RENDER_EXTERNAL_URL:
         # Режим webhook для Render
-        webhook_url = f"{RENDER_EXTERNAL_URL}/webhook/{WEBHOOK_SECRET}"
+        webhook_url = f"{RENDER_EXTERNAL_URL}/"
         print(f"Setting webhook: {webhook_url}")
         tg_app.run_webhook(
             listen="0.0.0.0",
             port=PORT,
             webhook_url=webhook_url,
             allowed_updates=Update.ALL_TYPES,
-            path=f"/webhook/{WEBHOOK_SECRET}",
         )
     else:
         # Режим polling для локальной разработки
