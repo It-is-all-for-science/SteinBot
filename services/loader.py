@@ -32,10 +32,13 @@ def ingest_all(docs_dir="docs", db_dir="data/chroma_db"):
 def search_context(query, db_dir="data/chroma_db"):
     print("[DEBUG] search_context: start", flush=True)
     try:
+        print("[DEBUG] search_context: creating embeddings", flush=True)
         emb = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+        print("[DEBUG] search_context: creating Chroma", flush=True)
         db = Chroma(collection_name="steinbot_kb", embedding_function=emb, persist_directory=db_dir)
+        print("[DEBUG] search_context: running similarity_search", flush=True)
         docs = db.similarity_search(query, k=4)
-        print("[DEBUG] search_context: got docs", flush=True)
+        print(f"[DEBUG] search_context: got docs, count={len(docs)}", flush=True)
         return "\n\n".join([d.page_content for d in docs]) if docs else ""
     except Exception as e:
         print(f"[ERROR] search_context: {e}", flush=True)
