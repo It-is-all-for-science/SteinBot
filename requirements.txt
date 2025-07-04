@@ -1,15 +1,10 @@
 python-telegram-bot[webhooks]==20.7
 langchain==0.3.26
 langchain-chroma==0.1.4
-langchain-huggingface==0.2.0
-chromadb==0.5.0
-sentence-transformers>=2.6.0,<3.0.0
-pydub==0.25.1
-flask==3.0.0
-pandas==2.1.4
-aiofiles==0.8.0
-python-dotenv==1.0.0
+langchain-huggingface==0.0.6
+python-dotenv==1.0.1
 python-docx==1.1.0
 pymupdf==1.24.4
-openai==0.28.1
 openai-whisper
+# openai должен быть в самом конце для pinning
+openai==0.28.1
